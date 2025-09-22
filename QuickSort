@@ -1,0 +1,52 @@
+package algorithms;
+
+import utils.Metrics;  // Import the Metrics class from the utils package
+import utils.CsvWriter;  // Import CsvWriter to write the metrics to CSV
+
+import java.util.Random;
+
+public class QuickSort {
+
+    public static void quickSort(int[] arr, Metrics metrics) {
+        metrics.startTimer();  // Start timer
+        quickSortHelper(arr, 0, arr.length - 1, metrics);
+        metrics.stopTimer();  // Stop timer
+
+        // Write the collected metrics to the CSV
+        CsvWriter.writeMetrics("metrics.csv", "QuickSort", metrics.getElapsedTime(), metrics.getComparisons(), metrics.getAllocations(), metrics.getMaxRecursionDepth());
+    }
+
+    private static void quickSortHelper(int[] arr, int low, int high, Metrics metrics) {
+        metrics.enterRecursion();  // Increment recursion depth
+        if (low < high) {
+            int pi = partition(arr, low, high, metrics);
+            quickSortHelper(arr, low, pi - 1, metrics);
+            quickSortHelper(arr, pi + 1, high, metrics);
+        }
+        metrics.exitRecursion();  // Decrement recursion depth
+    }
+
+    private static int partition(int[] arr, int low, int high, Metrics metrics) {
+        Random rand = new Random();
+        int pivotIndex = low + rand.nextInt(high - low + 1);
+        int pivot = arr[pivotIndex];
+        swap(arr, pivotIndex, high);
+
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            metrics.incrementComparisons();  // Increment comparisons
+            if (arr[j] <= pivot) {
+                i++;
+                swap(arr, i, j);
+            }
+        }
+        swap(arr, i + 1, high);
+        return i + 1;
+    }
+
+    private static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
