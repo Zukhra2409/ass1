@@ -1,0 +1,29 @@
+import algorithms.MergeSort;  // Import the MergeSort class from the algorithms package
+import algorithms.QuickSort;  // Import the QuickSort class from the algorithms package
+import utils.Metrics;         // Import the Metrics class from the utils package
+import java.util.Arrays;
+
+public class Main {
+
+    public static void main(String[] args) {
+        // Example array to sort
+        int[] arr = {10, 4, 3, 7, 1, 5, 8, 9, 2, 6};
+
+        // Create a new Metrics object
+        Metrics metrics = new Metrics();
+
+        // First, sort using MergeSort and collect metrics
+        int[] mergeSortedArray = arr.clone();  // Clone the array to sort it again using MergeSort
+        MergeSort.mergeSort(mergeSortedArray, metrics);  // Call the mergeSort method from MergeSort class
+
+        // Print the sorted array
+        System.out.println("Sorted array using MergeSort: " + Arrays.toString(mergeSortedArray));
+
+        // Then, sort using QuickSort and collect metrics
+        int[] quickSortedArray = arr.clone();  // Clone the array to sort it again using QuickSort
+        QuickSort.quickSort(quickSortedArray, metrics);  // Call the quickSort method from QuickSort class
+
+        // Print the sorted array
+        System.out.println("Sorted array using QuickSort: " + Arrays.toString(quickSortedArray));
+    }
+}
