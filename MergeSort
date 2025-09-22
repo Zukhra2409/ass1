@@ -1,0 +1,52 @@
+package algorithms;
+
+import utils.Metrics;  // Import the Metrics class from the utils package
+import utils.CsvWriter;  // Import CsvWriter to write the metrics to CSV
+import java.util.Arrays;
+
+public class MergeSort {
+
+    public static void mergeSort(int[] arr, Metrics metrics) {
+        metrics.startTimer();  // Start timer
+        mergeSortHelper(arr, 0, arr.length - 1, metrics);
+        metrics.stopTimer();  // Stop timer
+
+        // Write the collected metrics to the CSV
+        CsvWriter.writeMetrics("metrics.csv", "MergeSort", metrics.getElapsedTime(), metrics.getComparisons(), metrics.getAllocations(), metrics.getMaxRecursionDepth());
+    }
+
+    private static void mergeSortHelper(int[] arr, int left, int right, Metrics metrics) {
+        metrics.enterRecursion();  // Increment recursion depth
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            mergeSortHelper(arr, left, mid, metrics);
+            mergeSortHelper(arr, mid + 1, right, metrics);
+            merge(arr, left, mid, right, metrics);
+        }
+        metrics.exitRecursion();  // Decrement recursion depth
+    }
+
+    private static void merge(int[] arr, int left, int mid, int right, Metrics metrics) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+
+        // Increment allocation count when creating new arrays
+        metrics.incrementAllocations();
+
+        int[] leftArr = Arrays.copyOfRange(arr, left, mid + 1);
+        int[] rightArr = Arrays.copyOfRange(arr, mid + 1, right + 1);
+
+        int i = 0, j = 0, k = left;
+        while (i < n1 && j < n2) {
+            metrics.incrementComparisons();  // Increment comparisons
+            if (leftArr[i] <= rightArr[j]) {
+                arr[k++] = leftArr[i++];
+            } else {
+                arr[k++] = rightArr[j++];
+            }
+        }
+
+        while (i < n1) arr[k++] = leftArr[i++];
+        while (j < n2) arr[k++] = rightArr[j++];
+    }
+}
