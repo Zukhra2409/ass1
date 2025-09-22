@@ -1,0 +1,62 @@
+package utils;  // Correct package declaration
+
+public class Metrics {
+
+    private long startTime;       // Start time of the algorithm
+    private long endTime;         // End time of the algorithm
+    private int comparisons = 0;  // Track number of comparisons
+    private int allocations = 0;  // Track number of allocations
+    private int recursionDepth = 0; // Track recursion depth
+    private int maxRecursionDepth = 0; // Track the maximum recursion depth
+
+    // Start the timer for the algorithm
+    public void startTimer() {
+        startTime = System.nanoTime();
+    }
+
+    // End the timer for the algorithm and calculate the elapsed time
+    public void stopTimer() {
+        endTime = System.nanoTime();
+    }
+
+    // Get the elapsed time in milliseconds
+    public long getElapsedTime() {
+        return (endTime - startTime) / 1000000;  // Convert to milliseconds
+    }
+
+    // Increment comparison count
+    public void incrementComparisons() {
+        comparisons++;
+    }
+
+    // Increment allocation count (This would be more complex for a full implementation)
+    public void incrementAllocations() {
+        allocations++;
+    }
+
+    // Track recursion depth
+    public void enterRecursion() {
+        recursionDepth++;
+        if (recursionDepth > maxRecursionDepth) {
+            maxRecursionDepth = recursionDepth;
+        }
+    }
+
+    // Decrement recursion depth
+    public void exitRecursion() {
+        recursionDepth--;
+    }
+
+    // Getter methods
+    public int getComparisons() {
+        return comparisons;
+    }
+
+    public int getAllocations() {
+        return allocations;
+    }
+
+    public int getMaxRecursionDepth() {
+        return maxRecursionDepth;
+    }
+}
