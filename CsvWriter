@@ -1,0 +1,20 @@
+package utils;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class CsvWriter {
+
+    // Writes the metrics to a CSV file
+    public static void writeMetrics(String filename, String algorithmName, long time, int comparisons, int allocations, int maxRecursionDepth) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {  // Open the file in append mode
+            // Append the metrics to the CSV file
+            writer.write(algorithmName + "," + time + "," + comparisons + "," + allocations + "," + maxRecursionDepth);
+            writer.newLine();  // Add a new line after each record
+        } catch (IOException e) {
+            // Print the error with a simple log message
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+}
