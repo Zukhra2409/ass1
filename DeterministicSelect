@@ -1,0 +1,91 @@
+package algorithms;
+
+import java.util.Arrays;
+
+public class DeterministicSelect {
+
+    // Main function for deterministic selection
+    public static int deterministicSelect(int[] arr, int k) {
+        if (arr.length <= 5) {
+            Arrays.sort(arr);
+            return arr[k];  // Base case, sort and return the k-th element.
+        }
+
+        // Step 1: Group elements into groups of 5 and find their medians.
+        int[] medians = new int[(arr.length + 4) / 5];
+        for (int i = 0; i < medians.length; i++) {
+            int start = i * 5;
+            int end = Math.min(start + 5, arr.length);
+            int[] group = Arrays.copyOfRange(arr, start, end);
+            Arrays.sort(group);  // Sort each group to find the median
+            medians[i] = group[group.length / 2];  // The median is the middle element
+        }
+
+        // Step 2: Find the pivot by recursively applying deterministicSelect on the medians
+        int pivot = deterministicSelect(medians, medians.length / 2);
+
+        // Step 3: Perform in-place partitioning around the pivot
+        int pivotIndex = partition(arr, 0, arr.length - 1, pivot);
+
+        // Step 4: Recurse into the appropriate side based on the value of k
+        if (k == pivotIndex) {
+            return arr[pivotIndex];  // Pivot is the k-th element
+        } else if (k < pivotIndex) {
+            return deterministicSelect(arr, 0, pivotIndex - 1, k);  // Left side
+        } else {
+            return deterministicSelect(arr, pivotIndex + 1, arr.length - 1, k);  // Right side
+        }
+    }
+
+    // Partition the array around the pivot in-place
+    private static int partition(int[] arr, int left, int right, int pivot) {
+        int i = left - 1;
+
+        // Move the pivot to the rightmost position
+        for (int j = left; j < right; j++) {
+            if (arr[j] < pivot) {
+                i++;
+                swap(arr, i, j);  // Swap elements less than the pivot to the left
+            }
+        }
+
+        // Place the pivot in its correct position
+        swap(arr, i + 1, right);
+        return i + 1;  // Return the pivot's final index
+    }
+
+    // Swap two elements in the array
+    private static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    // Helper method for the recursive call on subarrays with proper bounds
+    private static int deterministicSelect(int[] arr, int left, int right, int k) {
+        if (left == right) {
+            return arr[left];  // Base case, only one element
+        }
+
+        // Find the pivot by recursively applying deterministicSelect on the array
+        int pivot = arr[(left + right) / 2];
+
+        // Perform in-place partitioning
+        int pivotIndex = partition(arr, left, right, pivot);
+
+        if (k == pivotIndex) {
+            return arr[pivotIndex];
+        } else if (k < pivotIndex) {
+            return deterministicSelect(arr, left, pivotIndex - 1, k);
+        } else {
+            return deterministicSelect(arr, pivotIndex + 1, right, k);
+        }
+    }
+
+    public static void main(String[] args) {
+        // Example usage:
+        int[] arr = {10, 4, 3, 7, 1, 5, 8, 9, 2, 6};
+        int k = 5;  // Find the 5th smallest element (0-indexed)
+        System.out.println("The " + k + "th smallest element is: " + deterministicSelect(arr, k));
+    }
+}
